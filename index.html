@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OXY PANNEL | Premium Keys Store</title>
+    <title>OXY PANNEL | Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -48,10 +48,14 @@
 
             const defaultProductData = { 
                 videoUrl: "", 
-                details: "OXY PANNEL Premium Version.\nBest features and anti-ban protection.", 
+                details: "OXY PANNEL Version.\nBest features and anti-ban protection.", 
                 dur1: "3 Hours", price1: 147, keys1: [],
                 dur2: "6 Hours", price2: 250, keys2: [],
-                dur3: "1 Day", price3: 380, keys3: []
+                dur3: "1 Day", price3: 380, keys3: [],
+                whatsappUrl: "https://wa.me/917250019052",
+                telegramUrl: "https://t.me/Ts_hunter01",
+                showWhatsapp: true,
+                showTelegram: true
             };
             const [productData, setProductData] = useState(defaultProductData);
             const [userOrders, setUserOrders] = useState([]);
@@ -67,7 +71,7 @@
 
             useEffect(() => {
                 const unsubProduct = db.collection('settings').doc('product').onSnapshot(doc => {
-                    if(doc.exists) setProductData(doc.data());
+                    if(doc.exists) setProductData({...defaultProductData, ...doc.data()});
                     else db.collection('settings').doc('product').set(defaultProductData);
                 });
 
@@ -156,7 +160,7 @@
             const adminSaveProduct = async (e) => {
                 e.preventDefault();
                 await db.collection('settings').doc('product').set(productData, { merge: true });
-                alert("Product settings & stock updated live!");
+                alert("Product & Contact details updated live!");
             };
 
             const addKeysToStock = (keyField, inputVal, setInputVal) => {
@@ -166,7 +170,7 @@
                 const updated = [...currentKeys, ...newKeysArray];
                 setProductData({...productData, [keyField]: updated});
                 setInputVal('');
-                alert(`${newKeysArray.length} keys added! Click 'Save Product Changes Live'.`);
+                alert(`${newKeysArray.length} keys added! Click 'Save Changes Live'.`);
             };
 
             if (!user) {
@@ -247,6 +251,31 @@
                                 </div>
 
                                 <div className="mb-8 bg-black/50 p-6 rounded-xl border border-gray-800">
+                                    <h3 className="text-xl font-bold mb-4 text-purple-400">📞 Manage Contact Buttons & Links</h3>
+                                    <div className="space-y-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="bg-gray-900 p-4 rounded-lg border border-gray-700">
+                                                <label className="flex items-center justify-between mb-2">
+                                                    <span className="font-bold text-green-400">WhatsApp Link / Chat URL</span>
+                                                    <input type="checkbox" checked={productData.showWhatsapp} onChange={e=>setProductData({...productData, showWhatsapp: e.target.checked})} className="w-5 h-5 accent-green-500" />
+                                                </label>
+                                                <input type="text" placeholder="https://wa.me/917250019052" value={productData.whatsappUrl} onChange={e=>setProductData({...productData, whatsappUrl: e.target.value})} className="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none text-sm" />
+                                                <span className="text-xs text-gray-500 mt-1 block">Check box to show on store. Uncheck to hide.</span>
+                                            </div>
+
+                                            <div className="bg-gray-900 p-4 rounded-lg border border-gray-700">
+                                                <label className="flex items-center justify-between mb-2">
+                                                    <span className="font-bold text-electric">Telegram Link / Username URL</span>
+                                                    <input type="checkbox" checked={productData.showTelegram} onChange={e=>setProductData({...productData, showTelegram: e.target.checked})} className="w-5 h-5 accent-blue-500" />
+                                                </label>
+                                                <input type="text" placeholder="https://t.me/Ts_hunter01" value={productData.telegramUrl} onChange={e=>setProductData({...productData, telegramUrl: e.target.value})} className="w-full p-3 bg-black border border-gray-700 rounded-lg outline-none text-sm" />
+                                                <span className="text-xs text-gray-500 mt-1 block">Check box to show on store. Uncheck to hide.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="mb-8 bg-black/50 p-6 rounded-xl border border-gray-800">
                                     <h3 className="text-xl font-bold mb-4 text-purple-400">📦 Edit Product & Key Stock</h3>
                                     <form onSubmit={adminSaveProduct} className="space-y-6">
                                         <div className="bg-gray-900 p-4 rounded-lg border border-gray-700">
@@ -308,7 +337,7 @@
                                             </div>
                                         </div>
 
-                                        <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-electric py-4 rounded-lg font-black text-lg">Save Product Changes Live</button>
+                                        <button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-electric py-4 rounded-lg font-black text-lg">Save Changes Live</button>
                                     </form>
                                 </div>
 
@@ -424,9 +453,14 @@
                                 <div className="bg-gradient-to-r from-gray-900 to-black border border-gray-800 rounded-xl p-6">
                                     <h4 className="text-xl font-bold text-white mb-2">How to Add Balance?</h4>
                                     <p className="text-gray-400 mb-6">Send payment to Admin and share screenshot along with your email: <strong className="text-white">{user.email}</strong></p>
+                                    
                                     <div className="flex flex-col sm:flex-row gap-4">
-                                        <a href={`https://wa.me/917250019052?text=Hi Admin, I want to add balance. Email: ${user.email}`} target="_blank" className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-lg font-bold">WhatsApp (+91 7250019052)</a>
-                                        <a href="https://t.me/Ts_hunter01" target="_blank" className="flex-1 flex items-center justify-center gap-2 bg-[#0088cc] text-white px-6 py-3 rounded-lg font-bold">Telegram (@Ts_hunter01)</a>
+                                        {productData.showWhatsapp && (
+                                            <a href={productData.whatsappUrl} target="_blank" className="flex-1 flex items-center justify-center gap-2 bg-[#25D366] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90">WhatsApp</a>
+                                        )}
+                                        {productData.showTelegram && (
+                                            <a href={productData.telegramUrl} target="_blank" className="flex-1 flex items-center justify-center gap-2 bg-[#0088cc] text-white px-6 py-3 rounded-lg font-bold hover:opacity-90">Telegram</a>
+                                        )}
                                     </div>
                                 </div>
                             </>
