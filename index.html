@@ -304,7 +304,6 @@
                 setProductData({ ...productData, plans: updated });
             };
 
-            // DIRECT AUTO-SAVE KEY FUNCTION
             const addKeysToPlan = async (index) => {
                 const rawInput = newKeyInputs[index] || '';
                 if(!rawInput.trim()) return;
@@ -313,7 +312,6 @@
                 const updatedPlans = [...productData.plans];
                 updatedPlans[index].keys = [...(updatedPlans[index].keys || []), ...newKeys];
                 
-                // Directly update local state and Firebase database simultaneously!
                 setProductData({ ...productData, plans: updatedPlans });
                 setNewKeyInputs({ ...newKeyInputs, [index]: '' });
 
@@ -358,14 +356,14 @@
                     )}
 
                     <nav className="border-b border-gray-800/80 bg-black/60 backdrop-blur-md sticky top-0 z-40">
-                        <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-                            <h1 className="text-xl sm:text-2xl font-black bg-gradient-to-r from-purple-400 to-electric text-transparent bg-clip-text cursor-pointer tracking-wider" onClick={() => { setActiveTab('store'); setIsAdminMode(false); }}>OXY PANNEL</h1>
-                            <div className="flex items-center gap-1.5 sm:gap-4">
-                                <button onClick={() => { setActiveTab('store'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-lg transition ${activeTab === 'store' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Store</button>
-                                <button onClick={() => { setActiveTab('generator'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-lg transition ${activeTab === 'generator' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Config Generator</button>
-                                <button onClick={() => { setActiveTab('history'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2.5 sm:px-3 py-1.5 rounded-lg transition ${activeTab === 'history' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>My Orders</button>
-                                <span className="hidden sm:inline-block bg-gray-900 px-3.5 py-1.5 rounded-xl text-sm font-bold border border-gray-800 text-purple-400">₹{userData.balance || 0}</span>
-                                <button onClick={() => auth.signOut()} className="text-xs sm:text-sm bg-red-500/10 text-red-400 px-3 py-1.5 rounded-xl hover:bg-red-500 hover:text-white transition">Logout</button>
+                        <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
+                            <h1 className="text-lg sm:text-2xl font-black bg-gradient-to-r from-purple-400 to-electric text-transparent bg-clip-text cursor-pointer tracking-wider" onClick={() => { setActiveTab('store'); setIsAdminMode(false); }}>OXY PANNEL</h1>
+                            <div className="flex items-center gap-2 sm:gap-4">
+                                <button onClick={() => { setActiveTab('store'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-lg transition ${activeTab === 'store' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Store</button>
+                                <button onClick={() => { setActiveTab('generator'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-lg transition ${activeTab === 'generator' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Generator</button>
+                                <button onClick={() => { setActiveTab('history'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-lg transition ${activeTab === 'history' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Orders</button>
+                                <span className="bg-gray-900 px-3 py-1 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 text-purple-400 shadow-inner">₹{userData.balance || 0}</span>
+                                <button onClick={() => auth.signOut()} className="text-xs sm:text-sm bg-red-500/10 text-red-400 px-2.5 py-1 rounded-xl hover:bg-red-500 hover:text-white transition">Logout</button>
                             </div>
                         </div>
                     </nav>
@@ -464,7 +462,6 @@
                                             <textarea required value={productData.details} onChange={e=>setProductData({...productData, details: e.target.value})} className="w-full p-3 bg-black border border-gray-800 rounded-xl h-24 text-sm outline-none"></textarea>
                                         </div>
                                         
-                                        {/* Dynamic Plans Editor */}
                                         <div className="space-y-4">
                                             {productData.plans?.map((plan, index) => (
                                                 <div key={plan.id || index} className="bg-gray-900 p-5 rounded-xl border border-gray-800 relative space-y-4">
@@ -590,6 +587,17 @@
                             </div>
                         ) : (
                             <>
+                                {/* Wallet Balance Card for Clients */}
+                                <div className="bg-gradient-to-r from-purple-900/40 via-gray-900 to-black border border-purple-500/40 rounded-2xl p-5 mb-6 flex justify-between items-center shadow-xl">
+                                    <div>
+                                        <div className="text-xs text-gray-400 uppercase font-semibold">Your Wallet Balance</div>
+                                        <div className="text-2xl sm:text-3xl font-black text-purple-400 mt-0.5">₹{userData.balance || 0}</div>
+                                    </div>
+                                    <div className="bg-purple-600/20 border border-purple-500/30 text-purple-300 px-4 py-2 rounded-xl text-xs font-bold">
+                                        Active Account
+                                    </div>
+                                </div>
+
                                 <div className="w-full aspect-video bg-gray-900 rounded-2xl overflow-hidden border border-gray-800/80 shadow-[0_0_30px_rgba(0,0,0,0.6)] mb-6 flex items-center justify-center relative">
                                     {productData.videoUrl ? (
                                         <video className="w-full h-full object-cover" src={productData.videoUrl} controls controlsList="nodownload"></video>
@@ -605,7 +613,6 @@
 
                                 <h3 className="text-lg sm:text-xl font-bold mb-5 border-l-4 border-purple-500 pl-3 tracking-wide">Select Key Duration</h3>
                                 
-                                {/* Dynamic Plans Grid */}
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
                                     {productData.plans?.map((plan, index) => {
                                         const stockCount = plan.keys?.length || 0;
