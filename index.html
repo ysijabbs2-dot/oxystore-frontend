@@ -54,7 +54,7 @@
         function App() {
             const [user, setUser] = useState(null);
             const [userData, setUserData] = useState({ balance: 0 });
-            const [activeTab, setActiveTab] = useState('store'); // 'store', 'generator', 'history'
+            const [activeTab, setActiveTab] = useState('store');
             
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
@@ -304,17 +304,25 @@
                 setProductData({ ...productData, plans: updated });
             };
 
-            const addKeysToPlan = (index) => {
+            // DIRECT AUTO-SAVE KEY FUNCTION
+            const addKeysToPlan = async (index) => {
                 const rawInput = newKeyInputs[index] || '';
                 if(!rawInput.trim()) return;
                 const newKeys = rawInput.split('\n').map(k => k.trim()).filter(k => k.length > 0);
                 
-                const updated = [...productData.plans];
-                updated[index].keys = [...(updated[index].keys || []), ...newKeys];
-                setProductData({ ...productData, plans: updated });
+                const updatedPlans = [...productData.plans];
+                updatedPlans[index].keys = [...(updatedPlans[index].keys || []), ...newKeys];
                 
+                // Directly update local state and Firebase database simultaneously!
+                setProductData({ ...productData, plans: updatedPlans });
                 setNewKeyInputs({ ...newKeyInputs, [index]: '' });
-                alert(`${newKeys.length} keys added to ${updated[index].name}! Click 'Save Changes Live'.`);
+
+                try {
+                    await db.collection('settings').doc('product').set({ plans: updatedPlans }, { merge: true });
+                    alert(`${newKeys.length} keys added and saved to database successfully!`);
+                } catch(err) {
+                    alert("Error saving keys: " + err.message);
+                }
             };
 
             if (!user) {
@@ -341,7 +349,6 @@
 
             return (
                 <div className="pb-20">
-                    {/* Live Ticker Bar */}
                     {productData.announcement && (
                         <div className="bg-purple-900/40 border-b border-purple-500/20 text-purple-300 text-xs py-2 px-4 overflow-hidden whitespace-nowrap">
                             <div className="inline-block animate-marquee font-medium">
