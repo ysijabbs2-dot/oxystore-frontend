@@ -55,6 +55,7 @@
             const [user, setUser] = useState(null);
             const [userData, setUserData] = useState({ balance: 0 });
             const [activeTab, setActiveTab] = useState('store');
+            const [isSidebarOpen, setIsSidebarOpen] = useState(false);
             
             const [email, setEmail] = useState('');
             const [password, setPassword] = useState('');
@@ -71,6 +72,9 @@
                 whatsappUrl: "https://wa.me/2348029770616",
                 whatsappNumber: "+234 802 977 0616",
                 telegramUrl: "https://t.me/Ts_hunter01",
+                telegramChannelUrl: "https://t.me/your_telegram_channel",
+                whatsappChannelUrl: "https://whatsapp.com/channel/your_channel",
+                supportUrl: "https://wa.me/2348029770616",
                 showWhatsapp: true,
                 showWhatsappCopy: true,
                 showTelegram: true,
@@ -285,7 +289,7 @@
             const adminSaveProduct = async (e) => {
                 e.preventDefault();
                 await db.collection('settings').doc('product').set(productData, { merge: true });
-                alert("Panel settings & products updated live!");
+                alert("Panel settings & links updated live!");
             };
 
             const addPlan = () => {
@@ -347,6 +351,35 @@
 
             return (
                 <div className="pb-20">
+                    {/* Slide-out Sidebar Menu */}
+                    {isSidebarOpen && (
+                        <div className="fixed inset-0 z-50 flex">
+                            <div className="fixed inset-0 bg-black/70 backdrop-blur-sm" onClick={() => setIsSidebarOpen(false)}></div>
+                            <div className="relative w-72 bg-[#0c0c0e] border-r border-purple-500/30 p-6 flex flex-col justify-between z-10 shadow-2xl">
+                                <div>
+                                    <div className="flex justify-between items-center mb-8 border-b border-gray-800 pb-4">
+                                        <h2 className="text-xl font-black bg-gradient-to-r from-purple-400 to-electric text-transparent bg-clip-text">OXY MENU</h2>
+                                        <button onClick={() => setIsSidebarOpen(false)} className="text-gray-400 hover:text-white text-lg font-bold px-2 py-1 bg-gray-800/50 rounded-lg">✕</button>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <a href={productData.telegramChannelUrl} target="_blank" className="flex items-center gap-3 p-3.5 bg-black/60 border border-gray-800 hover:border-purple-500/50 rounded-xl font-bold text-sm text-blue-400 transition">
+                                            📢 Telegram Channel
+                                        </a>
+                                        <a href={productData.whatsappChannelUrl} target="_blank" className="flex items-center gap-3 p-3.5 bg-black/60 border border-gray-800 hover:border-purple-500/50 rounded-xl font-bold text-sm text-green-400 transition">
+                                            💬 WhatsApp Channel
+                                        </a>
+                                        <a href={productData.supportUrl} target="_blank" className="flex items-center gap-3 p-3.5 bg-black/60 border border-gray-800 hover:border-purple-500/50 rounded-xl font-bold text-sm text-purple-400 transition">
+                                            🛠️ Customer Support
+                                        </a>
+                                    </div>
+                                </div>
+                                <div className="text-center text-xs text-gray-500 pt-4 border-t border-gray-800">
+                                    OXY PANNEL v2.0
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
                     {productData.announcement && (
                         <div className="bg-purple-900/40 border-b border-purple-500/20 text-purple-300 text-xs py-2 px-4 overflow-hidden whitespace-nowrap">
                             <div className="inline-block animate-marquee font-medium">
@@ -357,11 +390,16 @@
 
                     <nav className="border-b border-gray-800/80 bg-black/60 backdrop-blur-md sticky top-0 z-40">
                         <div className="max-w-6xl mx-auto px-4 py-3 flex justify-between items-center">
-                            <h1 className="text-lg sm:text-2xl font-black bg-gradient-to-r from-purple-400 to-electric text-transparent bg-clip-text cursor-pointer tracking-wider" onClick={() => { setActiveTab('store'); setIsAdminMode(false); }}>OXY PANNEL</h1>
+                            <div className="flex items-center gap-3">
+                                <button onClick={() => setIsSidebarOpen(true)} className="text-gray-300 hover:text-purple-400 p-1.5 rounded-lg bg-gray-900 border border-gray-800 transition">
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                                </button>
+                                <h1 className="text-lg sm:text-2xl font-black bg-gradient-to-r from-purple-400 to-electric text-transparent bg-clip-text cursor-pointer tracking-wider" onClick={() => { setActiveTab('store'); setIsAdminMode(false); }}>OXY PANNEL</h1>
+                            </div>
                             <div className="flex items-center gap-2 sm:gap-4">
-                                <button onClick={() => { setActiveTab('store'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-lg transition ${activeTab === 'store' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Store</button>
-                                <button onClick={() => { setActiveTab('generator'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-lg transition ${activeTab === 'generator' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Generator</button>
-                                <button onClick={() => { setActiveTab('history'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2 py-1 rounded-lg transition ${activeTab === 'history' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Orders</button>
+                                <button onClick={() => { setActiveTab('store'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2.5 py-1 rounded-lg transition ${activeTab === 'store' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Store</button>
+                                <button onClick={() => { setActiveTab('generator'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2.5 py-1 rounded-lg transition ${activeTab === 'generator' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Generator</button>
+                                <button onClick={() => { setActiveTab('history'); setIsAdminMode(false); }} className={`text-xs sm:text-sm font-medium px-2.5 py-1 rounded-lg transition ${activeTab === 'history' && !isAdminMode ? 'bg-purple-600/20 text-purple-400 border border-purple-500/30' : 'text-gray-400 hover:text-white'}`}>Orders</button>
                                 <span className="bg-gray-900 px-3 py-1 rounded-xl text-xs sm:text-sm font-bold border border-gray-800 text-purple-400 shadow-inner">₹{userData.balance || 0}</span>
                                 <button onClick={() => auth.signOut()} className="text-xs sm:text-sm bg-red-500/10 text-red-400 px-2.5 py-1 rounded-xl hover:bg-red-500 hover:text-white transition">Logout</button>
                             </div>
@@ -411,35 +449,28 @@
                                 </div>
 
                                 <div className="mb-8 bg-black/60 p-6 rounded-xl border border-gray-800">
-                                    <h3 className="text-lg font-bold mb-4 text-purple-400">📞 Contact Links & Announcement</h3>
+                                    <h3 className="text-lg font-bold mb-4 text-purple-400">📞 Manage Sidebar & Contact Links</h3>
                                     <div className="space-y-4">
                                         <div>
                                             <label className="block text-xs text-gray-400 mb-1 font-bold">Announcement Ticker Text</label>
                                             <input type="text" value={productData.announcement || ''} onChange={e=>setProductData({...productData, announcement: e.target.value})} className="w-full p-3 bg-black border border-gray-800 rounded-xl outline-none text-sm focus:border-purple-500 transition" />
                                         </div>
-                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <div className="bg-gray-900 p-4 rounded-xl border border-gray-800">
-                                                <label className="flex items-center justify-between mb-2">
-                                                    <span className="font-bold text-green-400 text-xs">WhatsApp Button</span>
-                                                    <input type="checkbox" checked={productData.showWhatsapp} onChange={e=>setProductData({...productData, showWhatsapp: e.target.checked})} className="w-4 h-4 accent-green-500" />
-                                                </label>
-                                                <input type="text" placeholder="https://wa.me/..." value={productData.whatsappUrl} onChange={e=>setProductData({...productData, whatsappUrl: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
+                                                <label className="block text-xs text-blue-400 font-bold mb-1">Telegram Channel URL</label>
+                                                <input type="text" value={productData.telegramChannelUrl || ''} onChange={e=>setProductData({...productData, telegramChannelUrl: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
                                             </div>
-
                                             <div className="bg-gray-900 p-4 rounded-xl border border-gray-800">
-                                                <label className="flex items-center justify-between mb-2">
-                                                    <span className="font-bold text-green-300 text-xs">Copy Number Button</span>
-                                                    <input type="checkbox" checked={productData.showWhatsappCopy} onChange={e=>setProductData({...productData, showWhatsappCopy: e.target.checked})} className="w-4 h-4 accent-green-500" />
-                                                </label>
-                                                <input type="text" placeholder="+234..." value={productData.whatsappNumber} onChange={e=>setProductData({...productData, whatsappNumber: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
+                                                <label className="block text-xs text-green-400 font-bold mb-1">WhatsApp Channel URL</label>
+                                                <input type="text" value={productData.whatsappChannelUrl || ''} onChange={e=>setProductData({...productData, whatsappChannelUrl: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
                                             </div>
-
                                             <div className="bg-gray-900 p-4 rounded-xl border border-gray-800">
-                                                <label className="flex items-center justify-between mb-2">
-                                                    <span className="font-bold text-electric text-xs">Telegram Button</span>
-                                                    <input type="checkbox" checked={productData.showTelegram} onChange={e=>setProductData({...productData, showTelegram: e.target.checked})} className="w-4 h-4 accent-blue-500" />
-                                                </label>
-                                                <input type="text" placeholder="https://t.me/..." value={productData.telegramUrl} onChange={e=>setProductData({...productData, telegramUrl: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
+                                                <label className="block text-xs text-purple-400 font-bold mb-1">Customer Support URL</label>
+                                                <input type="text" value={productData.supportUrl || ''} onChange={e=>setProductData({...productData, supportUrl: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
+                                            </div>
+                                            <div className="bg-gray-900 p-4 rounded-xl border border-gray-800">
+                                                <label className="block text-xs text-green-300 font-bold mb-1">WhatsApp Chat Link</label>
+                                                <input type="text" value={productData.whatsappUrl || ''} onChange={e=>setProductData({...productData, whatsappUrl: e.target.value})} className="w-full p-2.5 bg-black border border-gray-800 rounded-lg outline-none text-xs" />
                                             </div>
                                         </div>
                                     </div>
@@ -587,7 +618,6 @@
                             </div>
                         ) : (
                             <>
-                                {/* Wallet Balance Card for Clients */}
                                 <div className="bg-gradient-to-r from-purple-900/40 via-gray-900 to-black border border-purple-500/40 rounded-2xl p-5 mb-6 flex justify-between items-center shadow-xl">
                                     <div>
                                         <div className="text-xs text-gray-400 uppercase font-semibold">Your Wallet Balance</div>
@@ -668,7 +698,7 @@
                         {!isAdminMode && (
                             <button onClick={() => {
                                 const pass = prompt("Enter Admin Password:");
-                                if(pass === "stormy3262") setIsAdminMode(true);
+                                if(pass === "OxyStore@Admin#2026_Secure") setIsAdminMode(true);
                                 else if(pass) alert("Wrong Password!");
                             }} className="text-gray-700 hover:text-purple-400 font-bold tracking-widest text-[10px] cursor-pointer transition">ADMIN ACCESS</button>
                         )}
