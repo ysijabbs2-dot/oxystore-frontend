@@ -67,6 +67,7 @@
             const [paymentUrl, setPaymentUrl] = useState('');
             const [activeOrderId, setActiveOrderId] = useState('');
             const [verifyingPayment, setVerifyingPayment] = useState(false);
+            const [loadingPay, setLoadingPay] = useState(false);
 
             // Generator State
             const [inputKey, setInputKey] = useState('');
@@ -192,13 +193,14 @@
                 }
             };
 
-            // Novaapay Create Order Integration
+            // Novaapay Create Order Integration with CORS Proxy
             const handleCreateNovaapayOrder = async () => {
                 if (!depositAmount || isNaN(depositAmount) || Number(depositAmount) <= 0) {
                     alert("Kripya valid amount enter karein!");
                     return;
                 }
                 
+                setLoadingPay(true);
                 const orderId = "OXYPAY_" + Date.now();
                 setActiveOrderId(orderId);
                 
@@ -212,9 +214,14 @@
                 payload.append("remark2", user.email);
 
                 try {
+                    // Using CORS Proxy to bypass browser fetch block
+                    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://novaapay.shop/api/create-order");
+                    
                     const res = await fetch("https://novaapay.shop/api/create-order", {
                         method: "POST",
-                        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                        headers: { 
+                            "Content-Type": "application/x-www-form-urlencoded"
+                        },
                         body: payload
                     });
                     const data = await res.json();
@@ -224,7 +231,24 @@
                         alert("Order create karne mein error aayi: " + (data.message || "Unknown error"));
                     }
                 } catch (err) {
-                    alert("Network error: " + err.message);
+                    // Fallback to CORS proxy if direct fetch fails
+                    try {
+                        const res2 = await fetch("https://thingproxy.freeboard.io/fetch/https://novaapay.shop/api/create-order", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                            body: payload
+                        });
+                        const data2 = await res2.json();
+                        if (data2.status && data2.result && data2.result.payment_url) {
+                            setPaymentUrl(data2.result.payment_url);
+                        } else {
+                            alert("Gateway Error: " + (data2.message || "Failed to generate link"));
+                        }
+                    } catch(e2) {
+                        alert("Network connection error. Kripya thodi der baad try karein.");
+                    }
+                } finally {
+                    setLoadingPay(false);
                 }
             };
 
@@ -540,10 +564,11 @@
                                             />
                                         </div>
                                         <button 
+                                            disabled={loadingPay}
                                             onClick={handleCreateNovaapayOrder}
                                             className="w-full bg-gradient-to-r from-purple-600 to-electric py-3.5 rounded-xl font-bold text-sm shadow-lg shadow-purple-600/20 hover:opacity-90 transition active:scale-95 text-white"
                                         >
-                                            Generate Payment Link ⚡
+                                            {loadingPay ? "Generating Link..." : "Generate Payment Link ⚡"}
                                         </button>
                                     </div>
                                 ) : (
