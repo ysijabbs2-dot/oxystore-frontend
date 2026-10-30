@@ -193,7 +193,7 @@
                 }
             };
 
-            // Novaapay Create Order Integration with CORS Proxy
+            // Novaapay Create Order Integration
             const handleCreateNovaapayOrder = async () => {
                 if (!depositAmount || isNaN(depositAmount) || Number(depositAmount) <= 0) {
                     alert("Kripya valid amount enter karein!");
@@ -214,9 +214,6 @@
                 payload.append("remark2", user.email);
 
                 try {
-                    // Using CORS Proxy to bypass browser fetch block
-                    const proxyUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent("https://novaapay.shop/api/create-order");
-                    
                     const res = await fetch("https://novaapay.shop/api/create-order", {
                         method: "POST",
                         headers: { 
@@ -231,7 +228,6 @@
                         alert("Order create karne mein error aayi: " + (data.message || "Unknown error"));
                     }
                 } catch (err) {
-                    // Fallback to CORS proxy if direct fetch fails
                     try {
                         const res2 = await fetch("https://thingproxy.freeboard.io/fetch/https://novaapay.shop/api/create-order", {
                             method: "POST",
