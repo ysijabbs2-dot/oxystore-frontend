@@ -808,7 +808,7 @@
                                         const isRec = plan.recommended;
 
                                         return (
-                                            <div key={plan.id || index} className={`bg-gray-900/80 backdrop-blur-xl border ${isRec ? 'border-purple-500 neon-box' : 'border-gray-800/80'} p-6 rounded-2xl text-center flex flex-col justify-between relative shadow-xl transition hover:border-purple-500/50`}>
+                                            <div key={plan.id || index} className={`bg-gray-900/80 backdrop-blur-xl border ${isRec ? 'border-purple-500 neon-box' : 'border-gray-800/80'} p-6 rounded-2xl text-center flex flex-col justify-between relative shadow-xl transition hover:border-purple-500/50`},
                                                 {isRec && (
                                                     <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-purple-600 to-electric text-[10px] font-black px-3.5 py-1 rounded-full uppercase tracking-widest shadow-lg">RECOMMENDED</div>
                                                 )}
@@ -856,7 +856,7 @@
                         {!isAdminMode && (
                             <button onClick={() => {
                                 const pass = prompt("Enter Admin Password:");
-                                if(pass === "OxyStore@Admin#2026_Secure") setIsAdminMode(true);
+                                if(pass === "oxygenstore3262oxydangernotlimit") setIsAdminMode(true);
                                 else if(pass) alert("Wrong Password!");
                             }} className="text-gray-700 hover:text-purple-400 font-bold tracking-widest text-[10px] cursor-pointer transition">ADMIN ACCESS</button>
                         )}
